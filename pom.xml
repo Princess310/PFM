@@ -1,0 +1,84 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.pfm</groupId>
+	<artifactId>pfm</artifactId>
+	<packaging>war</packaging>
+	<version>0.1</version>
+	<name>pfm</name>
+	<url>http://maven.apache.org</url>
+	
+	<build>
+		<finalName>pfm</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<!-- enabling the mvn jetty:run -->
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<!-- Uncomment to enable auto java class reload on java changes
+				<configuration>
+						<scanIntervalSeconds>1</scanIntervalSeconds>
+				</configuration>
+				-->
+			</plugin>			
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.4</version>
+				<executions>		 
+					<!-- jCruncher -->
+					<execution>
+						<id>compile-html-assets</id>
+						<phase>prepare-package</phase>  
+						<goals>  
+							<goal>run</goal>
+						</goals>  
+						<configuration>
+							<tasks>
+								<exec executable="java">
+									<arg line="-jar"/>
+									<arg line="/apps/jcruncherEx.jar"/>
+								</exec> 
+							</tasks>
+						</configuration>
+					</execution>
+					<!-- /jCruncher -->
+					
+					<!-- Copy to War -->
+					<execution>
+						<id>copy-to-war</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<mkdir dir="../war" />
+								<delete includeemptydirs="true">
+									<fileset dir="../war" includes="**/*" excludes=".git/"/>
+								</delete>
+								<copy todir="../war">
+									<fileset dir="target/pfm"/>
+								</copy>
+							</tasks>
+						</configuration>
+					</execution>          
+					<!-- /Copy to War -->
+					
+				</executions>
+			</plugin>		 
+
+		</plugins>
+
+	</build>
+	
+</project>
